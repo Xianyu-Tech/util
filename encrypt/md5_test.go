@@ -1,4 +1,4 @@
-package encrypt
+package encryptutil
 
 import (
 	"encoding/hex"
@@ -48,7 +48,7 @@ func TestMd5String(t *testing.T) {
 	}
 
 	for _, v := range tcs {
-		got := Md5String(v.Input.Raw)
+		got := Md5Str(v.Input.Raw)
 		if got != v.Expect.Result {
 			t.Errorf("got=%s,expect=%s", got, v.Expect.Result)
 		}
