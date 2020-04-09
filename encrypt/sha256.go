@@ -1,8 +1,7 @@
 package encryptutil
 
 import (
-	"crypto/md5"
-	"encoding/hex"
+	"crypto/sha256"
 	"fmt"
 )
 
