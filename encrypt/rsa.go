@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/hex"
 	"encoding/pem"
 	"errors"
 )
@@ -23,8 +24,7 @@ func GenRsaPublicKey(data []byte) (*rsa.PublicKey, error) {
 		return nil, err
 	}
 
-	return publicKey.(*rsa.PublicKey)
-
+	return publicKey.(*rsa.PublicKey), nil
 }
 
 func GenRsaPrivateKey(data []byte) (*rsa.PrivateKey, error) {
@@ -40,12 +40,12 @@ func GenRsaPrivateKey(data []byte) (*rsa.PrivateKey, error) {
 		return nil, err
 	}
 
-	return privateKey
+	return privateKey, nil
 }
 
 // RSA加密
 func RsaEncrypt(data []byte, publickey *rsa.PublicKey) ([]byte, error) {
-	return rsa.EncryptPKCS1v15(rand.Reader, publicKey, data)
+	return rsa.EncryptPKCS1v15(rand.Reader, publickey, data)
 }
 
 // RSA解密
@@ -69,8 +69,20 @@ func RsaSignWithSha256(data []byte, privatekey *rsa.PrivateKey) ([]byte, error) 
 	return sign, nil
 }
 
+func RsaSignWithSha256ToStr(data []byte, privatekey *rsa.PrivateKey) (string, error) {
+	sign, err := RsaSignWithSha256(data, privatekey)
+
+	if err != nil {
+		return "", err
+	}
+
+	signStr := hex.EncodeToString(sign)
+
+	return signStr, nil
+}
+
 // RSA验签
-func RsaVerySignWithSha256(data, sign []byte, publickey *rsa.PublicKey) bool {
+func RsaVerifyWithSha256(data, sign []byte, publickey *rsa.PublicKey) bool {
 	h := sha256.New()
 	h.Write(data)
 
@@ -84,4 +96,16 @@ func RsaVerySignWithSha256(data, sign []byte, publickey *rsa.PublicKey) bool {
 	}
 
 	return false
+}
+
+func RsaVerifyWithSha256FromStr(data []byte, sign string, publickey *rsa.PublicKey) bool {
+	signBytes, err := hex.DecodeString(sign)
+
+	if err != nil {
+		return false
+	}
+
+	resp := RsaVerifyWithSha256(data, signBytes, publickey)
+
+	return resp
 }

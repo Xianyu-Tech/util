@@ -15,3 +15,11 @@ func HmacWithSha256(key []byte, data []byte) []byte {
 
 	return resp
 }
+
+func HmacWithSha256ToStr(key []byte, data []byte) string {
+	resp := HmacWithSha256(key, data)
+
+	respStr := hex.EncodeToString(resp)
+
+	return respStr
+}

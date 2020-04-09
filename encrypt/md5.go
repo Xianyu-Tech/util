@@ -14,3 +14,11 @@ func Md5(data []byte) []byte {
 
 	return resp
 }
+
+func Md5ToStr(data []byte) string {
+	resp := Md5(data)
+
+	respStr := hex.EncodeToString(resp)
+
+	return respStr
+}
