@@ -10,40 +10,47 @@ import (
 	"errors"
 )
 
-// RSA加密
-func RsaEncrypt(data []byte, publickey []byte) ([]byte, error) {
-	block, _ := pem.Decode(publickey)
+func GenRsaPublicKey(data []byte) (*rsa.PublicKey, error) {
+	block, _ := pem.Decode(data)
 
 	if block == nil {
-		return nil, errors.New("public key error")
+		return nil, errors.New("data illegal")
 	}
 
-	pubInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
+	publicKey, err := x509.ParsePKIXPublicKey(block.Bytes)
 
 	if err != nil {
 		return nil, err
 	}
 
-	pub := pubInterface.(*rsa.PublicKey)
+	return publicKey.(*rsa.PublicKey)
 
-	return rsa.EncryptPKCS1v15(rand.Reader, pub, data)
+}
+
+func GenRsaPrivateKey(data []byte) (*rsa.PrivateKey, error) {
+	block, _ := pem.Decode(data)
+
+	if block == nil {
+		return nil, errors.New("data illegal")
+	}
+
+	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return privateKey
+}
+
+// RSA加密
+func RsaEncrypt(data []byte, publickey *rsa.PublicKey) ([]byte, error) {
+	return rsa.EncryptPKCS1v15(rand.Reader, publicKey, data)
 }
 
 // RSA解密
-func RsaDecrypt(ciphertext []byte, privatekey []byte) ([]byte, error) {
-	block, _ := pem.Decode(privatekey)
-
-	if block == nil {
-		return nil, errors.New("private key error!")
-	}
-
-	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return rsa.DecryptPKCS1v15(rand.Reader, priv, ciphertext)
+func RsaDecrypt(data []byte, privatekey *rsa.PrivateKey) ([]byte, error) {
+	return rsa.DecryptPKCS1v15(rand.Reader, privatekey, data)
 }
 
 // RSA签名
