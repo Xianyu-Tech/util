@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha256"
 	"crypto/x509"
+	"encoding/base64"
 	"encoding/hex"
 	"encoding/pem"
 	"errors"
@@ -77,6 +78,18 @@ func RsaSignWithSha256ToStr(data []byte, privatekey *rsa.PrivateKey) (string, er
 	}
 
 	signStr := hex.EncodeToString(sign)
+
+	return signStr, nil
+}
+
+func RsaSignWithSha256ToBase64(data []byte, privatekey *rsa.PrivateKey) (string, error) {
+	sign, err := RsaSignWithSha256(data, privatekey)
+
+	if err != nil {
+		return "", err
+	}
+
+	signStr := base64.StdEncoding.EncodeToString(sign)
 
 	return signStr, nil
 }
