@@ -18,6 +18,14 @@ func RandBaseInt(base int, n int) int {
 	return base + rand.Intn(n)
 }
 
+func RandBaseIntMax(base int, n int) int {
+	if n < 0 {
+		return base
+	}
+	
+	return base + rand.Intn(n - base)
+}
+
 // 随机0到n-1内的一个整数
 func RandInt(n int) int {
 	if n <= 0 {
