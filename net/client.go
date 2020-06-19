@@ -59,20 +59,21 @@ func NewHttpClientWithMaxIdleConns(maxidleconns, timeout int) *HttpClient {
 }
 
 func (this *HttpClient) Request(method, url string, headers map[string]string, body io.Reader) (*http.Response, error) {
-	req, err := http.NewRequest(method, url, body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
-
 	retry := 3
+	
 	var resp *http.Response
 
 	for i := 0; i < retry; i++ {
+		req, err := http.NewRequest(method, url, body)
+
+		if err != nil {
+			return nil, err
+		}
+
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+		
 		resp, err = this._client.Do(req)
 
 		if err != nil {
