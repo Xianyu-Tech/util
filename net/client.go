@@ -62,9 +62,12 @@ func (this *HttpClient) Request(method, url string, headers map[string]string, b
 	retry := 3
 	
 	var resp *http.Response
+	var req *http.Request
+	
+	var err error
 
 	for i := 0; i < retry; i++ {
-		req, err := http.NewRequest(method, url, body)
+		req, err = http.NewRequest(method, url, body)
 
 		if err != nil {
 			return nil, err
