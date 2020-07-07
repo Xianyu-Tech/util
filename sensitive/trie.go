@@ -26,7 +26,17 @@ type Trie struct {
 	_mutex sync.RWMutex
 }
 
-func NewTrie() *Trie {
+// 通过敏感词表初始化
+func NewTrieByWords(sensitivewords []string) *Trie {
+	sensTree := newTrie()
+
+	for _, sensitiveWord := range sensitivewords {
+		sensTree.Add(sensitiveWord)
+	}
+	return sensTree
+}
+
+func newTrie() *Trie {
 	trie := &Trie{
 		_root: newNode(),
 	}

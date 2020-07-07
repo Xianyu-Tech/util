@@ -23,3 +23,6 @@
 	
 ### zip/gzip.go
 	压缩算法, gzip算法（const中配置,大于指定大小使用压缩）
+	
+### sensitive/trie.go
+    敏感词检查
