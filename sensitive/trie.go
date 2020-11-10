@@ -147,6 +147,11 @@ func (trie *Trie) HasSensitive(data string) bool {
 			continue
 		}
 
+		// 是否结束
+		if len(node._node) == 0 {
+			return true
+		}
+
 		end := 0
 
 		for j := i + 1; j < lens; j++ {
