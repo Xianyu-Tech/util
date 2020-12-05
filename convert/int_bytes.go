@@ -5,20 +5,28 @@ import (
 	"encoding/binary"
 )
 
-func Int32ToBytes(n int32) []byte {
+func Int32ToBytes(n int32) ([]byte, error) {
 	bytesBuffer := bytes.NewBuffer([]byte{})
 
-	binary.Write(bytesBuffer, binary.BigEndian, n)
+	err := binary.Write(bytesBuffer, binary.BigEndian, n)
 
-	return bytesBuffer.Bytes()
+	if err != nil {
+		return nil, err
+	}
+
+	return bytesBuffer.Bytes(), nil
 }
 
-func BytesToInt32(val []byte) int32 {
+func BytesToInt32(val []byte) (int32, error) {
 	bytesBuffer := bytes.NewBuffer(val)
 
 	var n int32
 
-	binary.Read(bytesBuffer, binary.BigEndian, &n)
+	err := binary.Read(bytesBuffer, binary.BigEndian, &n)
 
-	return n
+	if err != nil {
+		return -1, err
+	}
+
+	return n, nil
 }
